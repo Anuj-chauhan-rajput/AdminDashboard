@@ -1,0 +1,145 @@
+/* Container for the whole dashboard */
+.dashboard-container {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    
+}
+
+
+
+
+.employee-image img {
+    width: 190px;
+    height: 250px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+
+
+
+
+
+/* Header and Navigation Bar */
+.dashboard-header {
+    background-color: #333;
+    color: white;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dashboard-header .logo h2 {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.dashboard-header nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 20px;
+}
+
+.dashboard-header nav ul li {
+    display: inline-block;
+}
+
+.dashboard-header nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.1rem;
+    padding: 10px;
+}
+
+.dashboard-header nav ul li a:hover {
+    background-color: #575757;
+    border-radius: 5px;
+}
+
+/* Welcome Message */
+.welcome-message {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.welcome-message h1 {
+    font-size: 2.5rem;
+    color: #333;
+}
+
+.welcome-message p {
+    font-size: 1.2rem;
+    color: #666;
+}
+
+/* Employee List Section */
+.employee-list-section {
+    margin: 20px 40px;
+}
+
+.employee-list-section input[type="text"] {
+    padding: 10px;
+    width: 300px;
+    font-size: 1rem;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.employee-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.employee-card {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.employee-info {
+    display: flex;
+    gap: 15px;
+}
+
+.employee-info div {
+    font-size: 1rem;
+    color: #333;
+}
+
+.employee-actions {
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    padding: 8px 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Form Section */
+.employee-form-section,
+.update-employee-section {
+    margin: 20px 40px;
+}
+
+.employee-form-section h2,
+.update-employee-section h2 {
+    color: #333;
+}

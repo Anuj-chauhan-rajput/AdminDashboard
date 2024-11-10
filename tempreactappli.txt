@@ -1,0 +1,294 @@
+dashboard backup....................===========
+
+// src/components/Dashboard.js
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import EmployeeForm from './EmployeeForm';
+
+const Dashboard = () => {
+    const [username, setUsername] = useState('');
+    const [showEmployeeForm, setShowEmployeeForm] = useState(false);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const storedUsername = localStorage.getItem('username');
+        if (storedUsername) {
+            setUsername(storedUsername);
+        } else {
+            navigate('/login');
+        }
+    }, [navigate]);
+
+    const handleEmployeeListClick = () => {
+        setShowEmployeeForm(true);
+    };
+
+    return (
+        <div className="dashboard">
+            <h2>Welcome to the Admin Panel</h2>
+            <nav>
+                <ul>
+                    <li><Link to="/dashboard">Home</Link></li>
+                    <li><button onClick={handleEmployeeListClick}>Employee List</button></li>
+                    <li><span>{username}</span></li>
+                    <li><Link to="/">Logout</Link></li>
+                </ul>
+            </nav>
+            {showEmployeeForm ? <EmployeeForm /> : <p>Welcome, {username}! <button onClick={handleEmployeeListClick}>Create Employee</button> </p>}
+         
+
+        </div>
+    );
+};
+
+export default Dashboard;
+=========================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MONGO_URI=mongodb+srv://lakshmiabc1980:Lakshmi2001@cluster0.ihgeb1z.mongodb.net/myDatabase?retryWrites=true&w=majority&appName=Cluster0
+
+
+
+
+
+
+
+
+
+
+
+
+
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+const Login = () => {
+    const navigate = useNavigate();
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch('http://localhost:5000/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password }),
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                navigate('/dashboard');
+            } else {
+                alert(data.message);
+            }
+        } catch (error) {
+            console.error('Error during login:', error);
+        }
+    };
+
+    return (
+        <div className="login">
+            <h2>Login</h2>
+            <form onSubmit={handleSubmit}>
+                <label>
+                    Username:
+                    <input
+                        type="text"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
+                    />
+                </label>
+                <label>
+                    Password:
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                </label>
+                <button type="submit">Login</button>
+            </form>
+        
+
+            <p>
+                Already have an account? <a href="/register">Register here</a>
+            </p>
+            
+        </div>
+    );
+};
+
+export default Login;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+App.js=--------
+
+
+
+// App.js
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Login from './components/Login';
+import Dashboard from './components/Dashboard';
+import Register from './components/Register';
+
+
+
+function App() {
+  return (
+    <div className="App">
+      <Routes>
+      <Route path="/register" element={<Register />} />
+        <Route path="/" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+
+    </div>
+  );
+}
+
+export default App;
+
+
+
+server.js..=======
+
+
+require('dotenv').config(); // Load environment variables from .env file
+const mongoose = require('mongoose');
+const express = require('express');
+const loginRoute = require('./routes/login'); // Import the login route file
+const registerRoute = require('./routes/register');  // Import the register route file
+
+const app = express();
+const PORT = process.env.PORT || 5000; // Default to 5000 if the PORT is not set in .env
+
+// Middleware to parse incoming JSON requests
+app.use(express.json());
+
+// MongoDB Connection
+const mongoURI = process.env.MONGO_URI; // Make sure MONGO_URI is set in your .env file
+
+mongoose.connect(mongoURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(() => {
+  console.log('MongoDB is connected');
+}).catch((error) => {
+  console.error('MongoDB connection error:', error);
+});
+
+// Route to confirm server is running
+app.get('/', (req, res) => {
+  res.send('Server is running');
+});
+
+// Use the login route
+app.use('/api', loginRoute); // All routes in loginRoute will be prefixed with /api
+
+// Use the register route
+app.use('/api', registerRoute);  // All routes in registerRoute will be prefixed with /api
+
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
+
+
+
+
+package,json in client-----======
+
+{
+  "name": "client",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.7.7",
+    "mongoose": "^8.8.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
