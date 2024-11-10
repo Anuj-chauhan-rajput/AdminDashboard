@@ -160,13 +160,20 @@ const Dashboard = () => {
                                 <div key={employee._id} className="employee-card">
                                     <div className="employee-info">
                                         <div className="employee-id">{employee._id}</div>
+                                     
                                         <div className="employee-image">
-                                            <img 
-                                                src={employee.image ? `http://localhost:5000/uploads/${employee.image}` : '/path/to/default-image.jpg'} 
-                                                alt={`${employee.name}'s profile`} 
-                                                style={{ width: '30px', height: '30px', borderRadius: '5%', objectFit: 'cover' }}
-                                            />
+                                        <img 
+    src={employee.image ? employee.image : '/path/to/default-image.jpg'} 
+    alt="Employee" 
+    style={{ width: '30px', height: '30px', borderRadius: '5%', objectFit: 'cover' }}
+/>
+
                                         </div>
+
+
+
+
+
                                         <div className="employee-name">{employee.name}</div>
                                         <div className="employee-email">{employee.email}</div>
                                         <div className="employee-mobile">{employee.mobile}</div>
