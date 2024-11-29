@@ -65,18 +65,33 @@ router.get('/list', async (req, res) => {
     }
 });
 
-// Delete an employee by ID
+// Delete an employee by ID (using _id directly as sent from frontend)
+// Delete an employee by ID (using _id directly as sent from frontend)
 router.delete('/delete/:id', async (req, res) => {
     try {
-        const employee = await Employee.findByIdAndDelete(req.params.id);
+        console.log("Deleting employee with ID:", req.params.id);  // Debugging line
+        
+        const employeeId = req.params.id;  // Get the ID from URL parameter
+        
+        // Check if the employeeId is valid
+        if (!employeeId) {
+            return res.status(400).json({ error: 'Invalid employee ID' });
+        }
+
+        // Find and delete the employee by ID
+        const employee = await Employee.findByIdAndDelete(employeeId);
+        
         if (!employee) {
             return res.status(404).json({ error: 'Employee not found' });
         }
+        
         res.status(200).json({ message: 'Employee deleted successfully' });
     } catch (error) {
+        console.error('Error deleting employee:', error);  // More detailed error logs
         res.status(400).json({ error: error.message });
     }
 });
+
 
 // Update employee data
 router.put('/update/:id', upload.single('image'), async (req, res) => {

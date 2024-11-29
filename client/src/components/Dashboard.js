@@ -16,7 +16,7 @@ const Dashboard = () => {
     const [selectedEmployee, setSelectedEmployee] = useState(null);
     const [username, setUsername] = useState('');
     const [showWelcomeMessage, setShowWelcomeMessage] = useState(true);
-    const [currentPage, setCurrentPage] = useState('Dashboard'); // Track current page title
+    const [currentPage, setCurrentPage] = useState('Dashboard');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -43,16 +43,25 @@ const Dashboard = () => {
         fetchEmployees();
     }, []);
 
+    // Handle delete action
     const handleDelete = async (id) => {
         try {
+            console.log(`Attempting to delete employee with ID: ${id}`);
             const response = await axios.delete(`http://localhost:5000/api/employees/delete/${id}`);
-            setMessage(response.data.message);
-            fetchEmployees();  // Refresh the list after deletion
+    
+            if (response.data.message === 'Employee deleted successfully') {
+                setMessage('Employee deleted successfully');
+                fetchEmployees();  // Refresh the employee list after deletion
+            } else {
+                setMessage('Failed to delete employee');
+            }
         } catch (error) {
+            console.error('Error deleting employee:', error.response ? error.response.data : error.message);
             setMessage('Error deleting employee');
         }
     };
 
+    // Handle edit action
     const handleEdit = (employee) => {
         setSelectedEmployee(employee);
         setShowEmployeeList(false);
@@ -61,23 +70,20 @@ const Dashboard = () => {
         setMessage('');
     };
 
+    // Handle navigation
     const handleNavigationClick = (view) => {
-        // Hide the welcome message after any navigation click
         setShowWelcomeMessage(false);
+        setCurrentPage(view);
 
-        // Set the specific view to show and update the page title
         if (view === 'list') {
-            setCurrentPage('Employee List');
             setShowEmployeeList(true);
             setShowEmployeeForm(false);
             setShowUpdateForm(false);
         } else if (view === 'create') {
-            setCurrentPage('Create Employee');
             setShowEmployeeForm(true);
             setShowEmployeeList(false);
             setShowUpdateForm(false);
         } else {
-            setCurrentPage('Dashboard');
             setShowEmployeeList(false);
             setShowEmployeeForm(false);
             setShowUpdateForm(false);
@@ -99,7 +105,7 @@ const Dashboard = () => {
             {/* Header and Navigation */}
             <header className="dashboard-header">
                 <div className="logo">
-                    <h2>My Company</h2> {/* Replace this with your logo */}
+                    <h2>Admin Dashboard</h2>
                 </div>
                 <nav>
                     <ul>
@@ -112,35 +118,15 @@ const Dashboard = () => {
                 </nav>
             </header>
 
-
-       {/* NetworkChart (AI map) Section */}
-       {currentPage === 'Dashboard' && (
+            {/* NetworkChart (AI map) Section */}
+            {currentPage === 'Dashboard' && (
                 <div className="network-chart-section">
-                                <div className="welcome-message">
-                    {/* Dynamically display page name */}
-                    {currentPage === 'Dashboard' && <h1>{currentPage}</h1> 
-                }
-
-{showWelcomeMessage && (
-                <div className="welcome-message">
-                    {/* Dynamically display page name */}
-                    {currentPage === 'Dashboard' && <p>Welcome Admin Panel</p>}
-                </div>
-            )}
-
-
-                </div>
-                
-                    <br /><br /><br /><br /><br />
+                    <div className="welcome-message">
+                        {showWelcomeMessage && <p>Welcome Admin Panel</p>}
+                    </div>
                     <NetworkChart />
                 </div>
             )}
-
-        
-
-     
-
-
 
             {/* Employee List Section */}
             {showEmployeeList && (
@@ -156,44 +142,47 @@ const Dashboard = () => {
 
                     <div className="employee-list">
                         {filteredEmployees.length > 0 ? (
-                            filteredEmployees.map((employee) => (
-                                <div key={employee._id} className="employee-card">
-                                    <div className="employee-info">
-                                        <div className="employee-id">{employee._id}</div>
-                                     
-                                        <div className="employee-image">
-                                        <img 
-    src={employee.image ? employee.image : '/path/to/default-image.jpg'} 
-    alt="Employee" 
-    style={{ width: '30px', height: '30px', borderRadius: '5%', objectFit: 'cover' }}
-/>
-
-                                        </div>
-
-
-
-
-
-                                        <div className="employee-name">{employee.name}</div>
-                                        <div className="employee-email">{employee.email}</div>
-                                        <div className="employee-mobile">{employee.mobile}</div>
-                                        <div className="employee-designation">{employee.designation}</div>
-                                        <div className="employee-course">{employee.courses && Array.isArray(employee.courses) ? employee.courses.join(', ') : employee.courses}</div>
-                                        <div className="employee-gender">{employee.gender}</div>
-                                        <div className="employee-createdAt">
-                                            {new Date(employee.createdAt).toLocaleDateString('en-US', {
-                                                year: 'numeric',
-                                                month: '2-digit',
-                                                day: '2-digit',
-                                            })}
-                                        </div>
-                                    </div>
-                                    <div className="employee-actions">
-                                        <button onClick={() => handleDelete(employee._id)}>Delete</button>
-                                        <button onClick={() => handleEdit(employee)}>Update</button>
-                                    </div>
-                                </div>
-                            ))
+                            <table className="employee-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Image</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Mobile</th>
+                                        <th>Designation</th>
+                                        <th>Courses</th>
+                                        <th>Gender</th>
+                                        <th>Created At</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {filteredEmployees.map((employee) => (
+                                        <tr key={employee._id}> {/* Use _id for delete and edit */}
+                                            <td>{employee._id}</td> {/* Display _id */}
+                                            <td>
+                                                <img 
+                                                    src={employee.image ? employee.image : '/path/to/default-image.jpg'} 
+                                                    alt="Employee" 
+                                                    style={{ width: '30px', height: '30px', borderRadius: '5%', objectFit: 'cover' }}
+                                                />
+                                            </td>
+                                            <td>{employee.name}</td>
+                                            <td>{employee.email}</td>
+                                            <td>{employee.mobile}</td>
+                                            <td>{employee.designation}</td>
+                                            <td>{employee.courses && Array.isArray(employee.courses) ? employee.courses.join(', ') : employee.courses}</td>
+                                            <td>{employee.gender}</td>
+                                            <td>{new Date(employee.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })}</td>
+                                            <td>
+                                                <button onClick={() => handleDelete(employee._id)}>Delete</button>
+                                                <button onClick={() => handleEdit(employee)}>Update</button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         ) : (
                             <p>No employees found.</p>
                         )}
